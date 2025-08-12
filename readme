@@ -1,0 +1,12 @@
+Connect to posgresql
+psql -U postgres
+
+Connect to db
+\c ispend_db_test
+
+Show all dbs
+\l
+
+Show tables in current db
+\d
+

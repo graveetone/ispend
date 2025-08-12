@@ -29,6 +29,5 @@ class TransactionUpdate(SQLModel):
     created_at: Optional[date] = None
 
 
-TransactionCreate = TransactionBase
-
-
+class TransactionCreate(TransactionBase):
+    ...
