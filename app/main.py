@@ -9,16 +9,13 @@ from .routers import transactions
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await ensure_database(db_name="ispend_db")
+    await ensure_database()
     await init_db()
 
     yield
 
 
-app = FastAPI(
-    docs_url="/",
-    lifespan=lifespan,
-)
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(
     transactions.router,

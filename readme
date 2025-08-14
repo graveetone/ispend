@@ -2,7 +2,7 @@ Connect to posgresql
 psql -U postgres
 
 Connect to db
-\c ispend_db_test
+\c ispend_db
 
 Show all dbs
 \l
