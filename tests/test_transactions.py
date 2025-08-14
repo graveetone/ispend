@@ -19,6 +19,35 @@ async def test_create_transaction(client_factory):
     assert data["id"] == 3
 
 
+@pytest.mark.parametrize(
+    argnames="params,expected_count",
+    argvalues=[
+        (dict(transaction_type="income", date="2025-08-05"), 1),
+        (dict(transaction_type="expense", date="2025-08-12"), 1),
+        (dict(transaction_type="expense"), 1),
+        (dict(date="2025-08-12"), 1),
+        (dict(transaction_type="income", date="2025-08-11"), 0),
+    ],
+    ids=[
+        "Income for specific date",
+        "Expense for specific date",
+        "All expenses",
+        "All transactions for date",
+        "No transactions for date"
+    ]
+)
+@pytest.mark.asyncio
+async def test_get_all_filtered_transactions(
+        client_factory, params, expected_count
+):
+    async with client_factory() as client:
+        response = await client.get("/", params=params)
+
+    assert response.status_code == 200
+    transactions = response.json()
+    assert len(transactions) == expected_count
+
+
 @pytest.mark.asyncio
 async def test_get_all_transactions(client_factory):
     async with client_factory() as client:

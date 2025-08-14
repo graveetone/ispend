@@ -1,9 +1,13 @@
-from typing import List
+import datetime
+from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from ..models import Transaction, TransactionCreate, TransactionUpdate
+from ..models import (
+    Transaction, TransactionCreate,
+    TransactionUpdate, TransactionType
+)
 from ..db import get_session
 
 router = APIRouter()
@@ -22,13 +26,27 @@ async def create_transaction(
 
 
 @router.get("/", response_model=List[Transaction])
-async def read_transactions(session: AsyncSession = Depends(get_session)):
-    result = await session.exec(select(Transaction))
+async def get_transactions(
+        session: AsyncSession = Depends(get_session),
+        transaction_type: Optional[TransactionType] = None,
+        date: Optional[datetime.date] = None
+):
+    filters = []
+
+    if transaction_type is not None:
+        filters.append(Transaction.type == transaction_type)
+
+    if date is not None:
+        filters.append(Transaction.created_at == date)
+
+    query = select(Transaction).where(*filters)
+
+    result = await session.exec(query)
     return result.all()
 
 
 @router.get("/{transaction_id}/", response_model=Transaction)
-async def read_transaction(
+async def get_transaction(
         transaction_id: int,
         session: AsyncSession = Depends(get_session)
 ):
