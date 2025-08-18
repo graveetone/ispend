@@ -2,8 +2,10 @@ from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
+import os
 
-DATABASE_URL = "postgresql+asyncpg://postgres:mysecretpassword@localhost/ispend_db"  # noqa: E501
+PGHOST = os.getenv("PGHOST")
+DATABASE_URL = f"postgresql+asyncpg://postgres:mysecretpassword@{PGHOST}/ispend_db"  # noqa: E501
 
 
 engine = create_async_engine(DATABASE_URL, echo=True)

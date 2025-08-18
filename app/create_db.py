@@ -11,7 +11,7 @@ PG_PORT = os.getenv("PGPORT", "5432")
 DB_NAME = os.getenv("PGDATABASE", "ispend_db")
 
 
-async def ensure_database():
+async def ensure_database(force_drop=True):
     conn = await asyncpg.connect(
         user=PG_USER,
         password=PG_PASS,
@@ -23,14 +23,14 @@ async def ensure_database():
     db_exists = await conn.fetchval(
         "SELECT 1 FROM pg_database WHERE datname=$1", DB_NAME
     )
-    if db_exists:
+    if db_exists and force_drop:
         await conn.execute(f'DROP DATABASE "{DB_NAME}"')
 
-    await conn.execute(f'CREATE DATABASE "{DB_NAME}"')
+        await conn.execute(f'CREATE DATABASE "{DB_NAME}"')
 
-    await create_db_with_tables(
-        f"postgresql+asyncpg://{PG_USER}:{PG_PASS}@{PG_HOST}/{DB_NAME}"
-    )
+        await create_db_with_tables(
+            f"postgresql+asyncpg://{PG_USER}:{PG_PASS}@{PG_HOST}/{DB_NAME}"
+        )
     await conn.close()
 
 

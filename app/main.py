@@ -9,7 +9,7 @@ from .routers import transactions
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await ensure_database()
+    await ensure_database(force_drop=False)
     await init_db()
 
     yield
