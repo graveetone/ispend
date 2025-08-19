@@ -2,13 +2,11 @@ import asyncio
 
 import pytest
 from httpx import AsyncClient, ASGITransport
-from sqlmodel import SQLModel
-from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.main import app
-from app.db import get_session
+from app.db import get_session, Base
 
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
@@ -30,12 +28,12 @@ app.dependency_overrides[get_session] = override_get_session
 @pytest.fixture(autouse=True)
 async def prepare_database(request):
     async with engine_test.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
+        await conn.run_sync(Base.metadata.create_all)
 
     yield
 
     async with engine_test.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
 
     await engine_test.dispose()
 

@@ -1,19 +1,19 @@
 import datetime
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import select
-from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlalchemy.ext.asyncio.session import AsyncSession
+from sqlalchemy import select
 
 from ..models import (
     Transaction, TransactionCreate,
-    TransactionUpdate, TransactionType
+    TransactionUpdate, TransactionType, TransactionModel
 )
 from ..db import get_session
 
 router = APIRouter()
 
 
-@router.post("/", response_model=Transaction)
+@router.post("/", response_model=TransactionModel)
 async def create_transaction(
         transaction: TransactionCreate,
         session: AsyncSession = Depends(get_session)
@@ -25,7 +25,7 @@ async def create_transaction(
     return new_transaction
 
 
-@router.get("/", response_model=List[Transaction])
+@router.get("/", response_model=List[TransactionModel])
 async def get_transactions(
         session: AsyncSession = Depends(get_session),
         transaction_type: Optional[TransactionType] = None,
@@ -41,11 +41,11 @@ async def get_transactions(
 
     query = select(Transaction).where(*filters)
 
-    result = await session.exec(query)
-    return result.all()
+    result = await session.execute(query)
+    return result.scalars().all()
 
 
-@router.get("/{transaction_id}/", response_model=Transaction)
+@router.get("/{transaction_id}/", response_model=TransactionModel)
 async def get_transaction(
         transaction_id: int,
         session: AsyncSession = Depends(get_session)
@@ -56,7 +56,7 @@ async def get_transaction(
     return transaction
 
 
-@router.patch("/{transaction_id}/", response_model=Transaction)
+@router.patch("/{transaction_id}/", response_model=TransactionModel)
 async def update_transaction(
         transaction_id: int,
         transaction_update: TransactionUpdate,

@@ -1,15 +1,18 @@
-from sqlmodel import SQLModel, Field
+from sqlalchemy import Column, Integer, String, Float, Date, Enum
+from pydantic import BaseModel
+from .db import Base
 from datetime import date
 from typing import Optional
-from enum import Enum
+import enum
 
 
-class TransactionType(str, Enum):
+class TransactionType(str, enum.Enum):
     INCOME = "income"
     EXPENSE = "expense"
 
 
-class TransactionBase(SQLModel):
+class TransactionModel(BaseModel):
+    id: int
     type: TransactionType
     amount: float
     description: str
@@ -17,11 +20,19 @@ class TransactionBase(SQLModel):
     created_at: date
 
 
-class Transaction(TransactionBase, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+
+class Transaction(Base):
+    __tablename__ = "transactions"
+
+    id: Optional[int] = Column(Integer, primary_key=True)
+    type = Column(Enum(TransactionType))
+    amount = Column(Float, nullable=False)
+    description = Column(String, nullable=False)
+    category = Column(String, nullable=False)
+    created_at = Column(Date)
 
 
-class TransactionUpdate(SQLModel):
+class TransactionUpdate(BaseModel):
     type: Optional[TransactionType] = None
     amount: Optional[float] = None
     description: Optional[str] = None
@@ -29,5 +40,9 @@ class TransactionUpdate(SQLModel):
     created_at: Optional[date] = None
 
 
-class TransactionCreate(TransactionBase):
-    ...
+class TransactionCreate(BaseModel):
+    type: TransactionType
+    amount: float
+    description: str
+    category: str
+    created_at: date
