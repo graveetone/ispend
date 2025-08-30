@@ -4,10 +4,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy import select
 
-from ..models import (
-    Transaction, TransactionCreate,
-    TransactionUpdate, TransactionType, TransactionModel
+from ..schemas import (
+    TransactionCreate, TransactionUpdate,
+    TransactionType, TransactionModel,
 )
+from ..models import Transaction
 from ..db import get_session
 
 router = APIRouter()
