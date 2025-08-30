@@ -18,6 +18,13 @@ class TransactionModel(BaseModel):
     category: str
     created_at: date
 
+    @classmethod
+    def from_orm(cls, obj):
+        params = {
+            **obj.__dict__,
+            "category": obj.category.title if obj.category else None
+        }
+        return cls(**params)
 
 class TransactionUpdate(BaseModel):
     type: Optional[TransactionType] = None
