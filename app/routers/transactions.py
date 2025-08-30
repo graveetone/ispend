@@ -33,7 +33,6 @@ async def create_transaction(
     new_transaction = Transaction(**params)
     new_transaction.category_id = category.id
 
-
     session.add(new_transaction)
     await session.commit()
     await session.refresh(new_transaction)

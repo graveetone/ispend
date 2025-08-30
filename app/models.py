@@ -14,9 +14,9 @@ class Transaction(Base):
     amount = Column(Float, nullable=False)
     description = Column(String, nullable=False)
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"))
-    category: Mapped["Category"] = relationship("Category", back_populates="transactions", lazy="joined")
-
-
+    category: Mapped["Category"] = relationship(
+        "Category", back_populates="transactions", lazy="joined"
+    )
     created_at = Column(Date)
 
 
@@ -26,4 +26,6 @@ class Category(Base):
     id: Optional[int] = Column(Integer, primary_key=True)
     title = Column(String, nullable=False, index=True, unique=True)
 
-    transactions: Mapped[List["Transaction"]] = relationship("Transaction", back_populates="category")
+    transactions: Mapped[List["Transaction"]] = relationship(
+        "Transaction", back_populates="category"
+    )

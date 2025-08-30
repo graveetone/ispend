@@ -26,6 +26,7 @@ class TransactionModel(BaseModel):
         }
         return cls(**params)
 
+
 class TransactionUpdate(BaseModel):
     type: Optional[TransactionType] = None
     amount: Optional[float] = None
