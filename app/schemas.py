@@ -41,3 +41,24 @@ class TransactionCreate(BaseModel):
     description: str
     category: str
     created_at: date
+
+
+class PlanCreate(BaseModel):
+    amount: float
+    category: str
+    month: date
+
+
+class PlanModel(BaseModel):
+    id: int
+    amount: float
+    category: str
+    month: date
+
+    @classmethod
+    def from_orm(cls, obj):
+        params = {
+            **obj.__dict__,
+            "category": obj.category.title if obj.category else None
+        }
+        return cls(**params)

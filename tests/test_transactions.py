@@ -4,7 +4,7 @@ import pytest
 @pytest.mark.asyncio
 async def test_create_transaction(client_factory):
     async with client_factory() as client:
-        response = await client.post("/", json={
+        response = await client.post("/transactions/", json={
             "type": "income",
             "amount": 100.5,
             "description": "Test income",
@@ -41,7 +41,7 @@ async def test_get_all_filtered_transactions(
         client_factory, params, expected_count
 ):
     async with client_factory() as client:
-        response = await client.get("/", params=params)
+        response = await client.get("/transactions/", params=params)
 
     assert response.status_code == 200
     transactions = response.json()
@@ -51,7 +51,7 @@ async def test_get_all_filtered_transactions(
 @pytest.mark.asyncio
 async def test_get_all_transactions(client_factory):
     async with client_factory() as client:
-        response = await client.get("/")
+        response = await client.get("/transactions/")
 
     assert response.status_code == 200
     transactions = response.json()
@@ -62,7 +62,7 @@ async def test_get_all_transactions(client_factory):
 async def test_get_transaction(client_factory, transactions):
     transaction_id = 2
     async with client_factory() as client:
-        response = await client.get(f"/{transaction_id}/")
+        response = await client.get(f"/transactions/{transaction_id}/")
 
     assert response.status_code == 200
     transaction = response.json()
@@ -77,7 +77,7 @@ async def test_delete_transaction(client_factory, transactions):
     transaction_id = 2
 
     async with client_factory() as client:
-        delete_response = await client.delete(f"/{transaction_id}/")
+        delete_response = await client.delete(f"/transactions/{transaction_id}/")
 
     async with client_factory() as client:
         response = await client.get(f"/api/v1/transactions/{transaction_id}/")
@@ -97,7 +97,7 @@ async def test_update_transaction(client_factory):
         "created_at": "2025-08-15"
     }
     async with client_factory() as client:
-        response = await client.patch(f"/{transaction_id}/", json=update_data)
+        response = await client.patch(f"/transactions/{transaction_id}/", json=update_data)
 
     assert response.status_code == 200
     data = response.json()

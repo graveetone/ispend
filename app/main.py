@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from .create_db import ensure_database
 from .db import init_db
-from .routers import transactions
+from .routers import transactions, plans
 
 
 @asynccontextmanager
@@ -17,8 +17,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(
-    transactions.router,
-    prefix="/api/v1/transactions",
-    tags=["transactions"],
-)
+routers = [
+    dict(router=transactions.router, prefix="/api/v1/transactions", tags=["transactions"]),
+    dict(router=plans.router, prefix="/api/v1/plans", tags=["plans"]),
+]
+
+for router_params in routers:
+    app.include_router(**router_params)

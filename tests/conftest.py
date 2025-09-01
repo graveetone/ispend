@@ -43,15 +43,9 @@ def client_factory():
     def _wrapper():
         return AsyncClient(
             transport=ASGITransport(app=app),
-            base_url="http://test/api/v1/transactions/",
+            base_url="http://test/api/v1",
         )
     return _wrapper
-
-
-@pytest.fixture
-async def client(client_factory):
-    async with client_factory() as c:
-        yield c
 
 
 @pytest.fixture(scope="session")
@@ -74,32 +68,38 @@ def transactions():
     ]
 
 
+@pytest.fixture(scope="session")
+def plans():
+    return [
+        {
+            "amount": 100.5,
+            "category": "Food",
+            "month": "2025-09-01"
+        }
+    ]
+
+
 @pytest.fixture(scope="function", autouse=True)
-async def seed_database(client_factory, transactions):
+async def seed_database(client_factory, transactions, plans):
     print("\nSeeding test database\n")
 
     async def create_transaction(transaction):
         async with client_factory() as client:
-            return await client.post("/", json=transaction)
+            return await client.post("/transactions/", json=transaction)
 
-    async def drop_transaction(transaction_id):
+    async def create_plan(plan):
         async with client_factory() as client:
-            return await client.delete(f"/{transaction_id}")
+            return await client.post("/plans/", json=plan)
 
     await asyncio.gather(
         *[
             create_transaction(transaction)
             for transaction in transactions
-        ]
-    )
-    yield
-    async with client_factory() as client:
-        transactions = await client.get("/")
-
-    print("\nCleanup test database\n")
-    await asyncio.gather(
+        ],
         *[
-            drop_transaction(transaction["id"])
-            for transaction in transactions.json()
-        ]
+            create_plan(plan)
+            for plan in plans
+        ],
     )
+
+    yield
