@@ -1,7 +1,6 @@
-from typing import Optional, List
+from typing import Optional
 
-from sqlalchemy import Column, Integer, String, Float, Date, Enum, ForeignKey, Index
-from sqlalchemy.orm import Mapped, relationship, mapped_column
+from sqlalchemy import Column, Integer, String, Float, Date, Enum, Index
 from .db import Base
 from .schemas import TransactionType
 
@@ -13,38 +12,18 @@ class Transaction(Base):
     type = Column(Enum(TransactionType))
     amount = Column(Float, nullable=False)
     description = Column(String, nullable=False)
-    category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"))
-    category: Mapped["Category"] = relationship(
-        "Category", back_populates="transactions", lazy="joined"
-    )
+    category = Column(String, nullable=False)
     created_at = Column(Date)
 
 
 class Plan(Base):
     __tablename__ = "plans"
     __table_args__ = (
-        Index('category_month_type', "category_id", "month", "type", unique=True),
+        Index('category_month_type', "category", "month", "type", unique=True),
     )
 
     id: Optional[int] = Column(Integer, primary_key=True)
     amount = Column(Float, nullable=False)
-    category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"))
-    category: Mapped["Category"] = relationship(
-        "Category", back_populates="plans", lazy="joined"
-    )
+    category = Column(String, nullable=False)
     month = Column(Date)
     type = Column(Enum(TransactionType))
-
-
-class Category(Base):
-    __tablename__ = "categories"
-
-    id: Optional[int] = Column(Integer, primary_key=True)
-    title = Column(String, nullable=False, index=True, unique=True)
-
-    transactions: Mapped[List["Transaction"]] = relationship(
-        "Transaction", back_populates="category"
-    )
-    plans: Mapped[List["Plan"]] = relationship(
-        "Plan", back_populates="category"
-    )

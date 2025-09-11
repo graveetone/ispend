@@ -8,7 +8,7 @@ from ..schemas import (
     TransactionCreate, TransactionUpdate,
     TransactionType, TransactionModel,
 )
-from ..models import Transaction, Category
+from ..models import Transaction
 from ..db import get_session
 
 router = APIRouter()
@@ -19,26 +19,13 @@ async def create_transaction(
         transaction: TransactionCreate,
         session: AsyncSession = Depends(get_session)
 ):
-    query = select(Category).where(Category.title == transaction.category)
-    category = await session.execute(query)
-    category = category.scalars().first()
-
-    if category is None:
-        category = Category(title=transaction.category)
-        session.add(category)
-        await session.commit()
-
-    params = transaction.model_dump()
-    params.pop("category")
-    new_transaction = Transaction(**params)
-    new_transaction.category_id = category.id
-
+    new_transaction = Transaction(**transaction.model_dump())
     session.add(new_transaction)
+
     await session.commit()
     await session.refresh(new_transaction)
-    await session.refresh(category)
 
-    return TransactionModel.from_orm(new_transaction)
+    return new_transaction
 
 
 @router.get("/", response_model=List[TransactionModel])
@@ -58,10 +45,7 @@ async def get_transactions(
     query = select(Transaction).where(*filters)
 
     result = await session.execute(query)
-    return [
-        TransactionModel.from_orm(transaction)
-        for transaction in result.scalars().all()
-    ]
+    return result.scalars().all()
 
 
 @router.get("/{transaction_id}/", response_model=TransactionModel)
@@ -72,7 +56,7 @@ async def get_transaction(
     transaction = await session.get(Transaction, transaction_id)
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
-    return TransactionModel.from_orm(transaction)
+    return transaction
 
 
 @router.patch("/{transaction_id}/", response_model=TransactionModel)
@@ -86,25 +70,13 @@ async def update_transaction(
         raise HTTPException(status_code=404, detail="Transaction not found")
 
     update_data = transaction_update.model_dump(exclude_unset=True)
-    category_title = update_data.pop("category")
 
     for key, value in update_data.items():
         setattr(transaction, key, value)
 
-    query = select(Category).where(Category.title == category_title)
-    category = await session.execute(query)
-    category = category.scalars().first()
-
-    if category is None:
-        category = Category(title=category_title)
-        session.add(category)
-        await session.commit()
-
-    transaction.category_id = category.id
-
     await session.commit()
     await session.refresh(transaction)
-    return TransactionModel.from_orm(transaction)
+    return transaction
 
 
 @router.delete("/{transaction_id}/", status_code=status.HTTP_204_NO_CONTENT)
