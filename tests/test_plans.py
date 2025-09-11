@@ -16,7 +16,7 @@ async def test_create_plan(client_factory):
     data = response.json()
     assert {
         **params,
-        "id": 2
+        "id": 3
     } == data
 
 

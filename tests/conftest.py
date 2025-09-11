@@ -64,7 +64,21 @@ def transactions():
             "description": "Chips",
             "category": "Snacks",
             "created_at": "2025-08-12"
-        }
+        },
+        {
+            "type": "expense",
+            "amount": 40.01,
+            "description": "Pepsi",
+            "category": "Junk food",
+            "created_at": "2025-08-12"
+        },
+        {
+            "type": "expense",
+            "amount": 120,
+            "description": "Burger",
+            "category": "Food",
+            "created_at": "2025-08-05"
+        },
     ]
 
 
@@ -75,6 +89,12 @@ def plans():
             "amount": 100.5,
             "category": "Food",
             "month": "2025-09-01",
+            "type": "expense",
+        },
+        {
+            "amount": 200,
+            "category": "Snacks",
+            "month": "2025-08-12",
             "type": "expense",
         }
     ]
