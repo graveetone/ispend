@@ -74,7 +74,8 @@ def plans():
         {
             "amount": 100.5,
             "category": "Food",
-            "month": "2025-09-01"
+            "month": "2025-09-01",
+            "type": "expense",
         }
     ]
 

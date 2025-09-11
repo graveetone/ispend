@@ -23,7 +23,7 @@ class Transaction(Base):
 class Plan(Base):
     __tablename__ = "plans"
     __table_args__ = (
-        Index('category_month', "category_id", "month", unique=True),
+        Index('category_month_type', "category_id", "month", "type", unique=True),
     )
 
     id: Optional[int] = Column(Integer, primary_key=True)
@@ -33,6 +33,7 @@ class Plan(Base):
         "Category", back_populates="plans", lazy="joined"
     )
     month = Column(Date)
+    type = Column(Enum(TransactionType))
 
 
 class Category(Base):

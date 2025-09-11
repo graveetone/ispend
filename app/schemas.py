@@ -47,6 +47,7 @@ class PlanCreate(BaseModel):
     amount: float
     category: str
     month: date
+    type: TransactionType
 
 
 class PlanModel(BaseModel):
@@ -54,6 +55,7 @@ class PlanModel(BaseModel):
     amount: float
     category: str
     month: date
+    type: TransactionType
 
     @classmethod
     def from_orm(cls, obj):
