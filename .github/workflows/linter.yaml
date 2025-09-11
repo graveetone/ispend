@@ -18,8 +18,12 @@ jobs:
 
       - name: Run linter
         run: |
-          flake8 --config=setup.cfg --output-file=${{ env.FLAKE8_REPORT_FILE }}
-          cat ${{ env.FLAKE8_REPORT_FILE }}
+          flake8 --config=setup.cfg --output-file=${{ env.FLAKE8_REPORT_FILE }} --exit-zero
+
+          if [ -s ${{ env.FLAKE8_REPORT_FILE }} ]; then
+            cat ${{ env.FLAKE8_REPORT_FILE }}
+            exit 1
+          fi
 
       - name: Upload flake8 report as artifact
         uses: actions/upload-artifact@v4
