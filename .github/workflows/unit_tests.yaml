@@ -16,4 +16,4 @@ jobs:
 
       - name: Run unit tests
         run: |
-          pytest -vs tests
+          pytest -vs tests --random-order --random-order-bucket=global
