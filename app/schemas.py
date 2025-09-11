@@ -48,3 +48,10 @@ class PlanModel(BaseModel):
     category: str
     month: date
     type: TransactionType
+
+
+class MonthCategoryModel(BaseModel):
+    category: str
+    type: TransactionType
+    planned: float
+    actual: float
