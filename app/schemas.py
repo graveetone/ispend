@@ -52,6 +52,6 @@ class PlanModel(BaseModel):
 
 class MonthCategoryModel(BaseModel):
     category: str
-    type: TransactionType
+    # type: TransactionType
     planned: float
     actual: float
