@@ -5,8 +5,8 @@ no_data_response = dict(
     incomes=[],
     expenses=[],
     total=dict(
-        incomes=dict(actual=0, planned=0),
-        expenses=dict(actual=0, planned=0),
+        incomes=dict(actual=0.0, planned=0.0),
+        expenses=dict(actual=0.0, planned=0.0),
     )
 )
 
@@ -18,7 +18,7 @@ two_categories_response = dict(
         dict(category="Snacks", type="expense", planned=200.0, actual=59.99),
     ],
     total=dict(
-        incomes=dict(actual=0, planned=0),
+        incomes=dict(actual=0.0, planned=0.0),
         expenses=dict(actual=100.0, planned=200.0),
     )
 )
@@ -28,18 +28,18 @@ expense_and_income_response = dict(
     incomes=[dict(category="Salary",  type="income", planned=0, actual=100.5)],
     expenses=[dict(category="Food",  type="expense", planned=0, actual=120)],
     total=dict(
-        incomes=dict(actual=100.5, planned=0),
-        expenses=dict(actual=120, planned=0),
+        incomes=dict(actual=100.5, planned=0.0),
+        expenses=dict(actual=120, planned=0.0),
     )
 )
 
 no_transactions_response = dict(
     month="2025-09-01",
     incomes=[],
-    expenses=[dict(category="Food", type="expense", planned=100.5, actual=0)],
+    expenses=[dict(category="Food", type="expense", planned=100.5, actual=0.0)],
     total=dict(
-        incomes=dict(actual=0, planned=0),
-        expenses=dict(actual=0, planned=100.5),
+        incomes=dict(actual=0.0, planned=0.0),
+        expenses=dict(actual=0.0, planned=100.5),
     )
 )
 
