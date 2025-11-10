@@ -11,4 +11,4 @@ Show tables in current db
 \d
 
 Start postgresql container with volume
-docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 -v postgresql_data:/var/lib/postgresql/data postgres
+docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 -v postgresql_data:/var/lib/postgresql postgres

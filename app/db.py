@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 
-PGHOST = os.getenv("PGHOST")
+PGHOST = os.getenv("PGHOST") or "localhost:5432"
 DATABASE_URL = f"postgresql+asyncpg://postgres:mysecretpassword@{PGHOST}/ispend_db"  # noqa: E501
 Base = declarative_base()
 
