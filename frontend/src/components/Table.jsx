@@ -46,7 +46,7 @@ console.log(data)
                   </tr>
                 </thead>
                 <tbody>
-                  {data.length > 0 ? data.map(row => (
+                  {data?.length > 0 ? data.map(row => (
                     <tr key={row.id}>
                       <td className="border border-gray-300 px-4 py-2">{row.category}</td>
                       <td className="border border-gray-300 px-4 py-2">{row.actual}</td>
