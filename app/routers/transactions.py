@@ -42,7 +42,13 @@ async def get_transactions(
     if date is not None:
         filters.append(Transaction.created_at == date)
 
-    query = select(Transaction).where(*filters)
+    query = select(
+        Transaction
+    ).where(
+        *filters
+    ).order_by(
+        Transaction.amount.desc()
+        )
 
     result = await session.execute(query)
     return result.scalars().all()

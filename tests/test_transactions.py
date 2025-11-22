@@ -23,9 +23,9 @@ async def test_create_transaction(client_factory):
     argnames="params,expected_count",
     argvalues=[
         (dict(transaction_type="income", date="2025-08-05"), 1),
-        (dict(transaction_type="expense", date="2025-08-12"), 2),
+        (dict(transaction_type="expense", date="2025-08-12"), 1),
         (dict(transaction_type="expense"), 3),
-        (dict(date="2025-08-12"), 2),
+        (dict(date="2025-08-05"), 2),
         (dict(transaction_type="income", date="2025-08-11"), 0),
     ],
     ids=[
