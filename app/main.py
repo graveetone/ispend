@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .create_db import ensure_database
 from .db import init_db
-from .routers import transactions, plans, months
+from .routers import transactions, plans, months, categories
 
 
 @asynccontextmanager
@@ -29,6 +29,7 @@ routers = [
     dict(router=transactions.router, prefix="/api/v1/transactions", tags=["transactions"]),
     dict(router=plans.router, prefix="/api/v1/plans", tags=["plans"]),
     dict(router=months.router, prefix="/api/v1/months", tags=["months"]),
+    dict(router=categories.router, prefix="/api/v1/categories", tags=["categories"]),
 ]
 
 for router_params in routers:
