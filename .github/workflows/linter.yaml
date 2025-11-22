@@ -5,23 +5,28 @@ jobs:
   linter:
     env:
       FLAKE8_REPORT_FILE: flake8_report.txt
+      ESLINT_REPORT_FILE: eslint_report.txt
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Install flake8
         run:
           pip install flake8
 
-      - name: Run linter
+      - name: Run linter for backend code
         run: |
-          flake8 --config=setup.cfg --output-file=${{ env.FLAKE8_REPORT_FILE }} --exit-zero
+          flake8 --config=setup.cfg --output-file="${FLAKE8_REPORT_FILE}" --exit-zero
 
-          if [ -s ${{ env.FLAKE8_REPORT_FILE }} ]; then
-            cat ${{ env.FLAKE8_REPORT_FILE }}
+          if [ -s "${FLAKE8_REPORT_FILE}" ]; then
+            echo "❌ Backend linting errors found!"
+            cat "${FLAKE8_REPORT_FILE}"
             exit 1
           fi
 
@@ -29,4 +34,34 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: flake8_report
-          path: ${{ env.FLAKE8_REPORT_FILE }}
+          path: "${FLAKE8_REPORT_FILE}"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install frontend deps
+        run: npm ci
+        working-directory: ./frontend
+
+      - name: Run ESLint for frontend code
+        run: |
+          cd frontend
+
+          # Run ESLint and save output
+          npx eslint . -f unix > "../${ESLINT_REPORT_FILE}" || true
+
+          cd ..
+
+          if [ -s "${ESLINT_REPORT_FILE}" ]; then
+            echo "❌ Frontend linting errors found!"
+            cat "${ESLINT_REPORT_FILE}"
+            exit 1
+          fi
+
+      - name: Upload ESLint report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint_report
+          path: "${ESLINT_REPORT_FILE}"
