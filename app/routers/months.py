@@ -45,6 +45,7 @@ async def get_month_new(
     ).group_by(
         Plan.type,
         Plan.category,
+        Plan.amount,
     ).order_by(
         Plan.amount.desc()
     ).subquery()
