@@ -50,7 +50,7 @@ jobs:
           cd frontend
 
           # Run ESLint and save output
-          npx eslint . -f unix > "../${ESLINT_REPORT_FILE}" || true
+          npx eslint . --output-file "../${ESLINT_REPORT_FILE}" || true
 
           cd ..
 
