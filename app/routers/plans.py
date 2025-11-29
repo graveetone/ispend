@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.post("/", response_model=PlanModel)
-async def create__or_edit_plan(
+async def create_or_edit_plan(
         plan_data: PlanCreate,
         session: AsyncSession = Depends(get_session)
 ):

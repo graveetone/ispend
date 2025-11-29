@@ -21,14 +21,13 @@ export const updateTransaction = (id, payload) => api.patch(`/api/v1/transaction
 export const deleteTransaction = (id) => api.delete(`/api/v1/transactions/${id}/`).then(r => r.status === 204)
 
 // Plans
-export const createPlan = (payload) => api.post('/api/v1/plans/', payload).then(r => r.data)
-export const getPlan = (category, month) => api.get('/api/v1/plans/', { params: { category, month } }).then(r => r.data)
-export const deletePlan = (category, month) => api.delete('/api/v1/plans/', { params: { category, month } }).then(r => r.status === 204)
+export const editPlan = (payload) => api.post('/api/v1/plans/', payload).then(r => r.data)
 
 // Month summary
 export const getMonthSummary = (month) => api.get(`/api/v1/months/${month}`).then(r => r.data)
 
 export const getMonthTransactions = (month) => api.get(`/api/v1/months/${month}`).then(r => r.data)
 export const getCategories = (transaction_type) => api.get(`/api/v1/categories`, { params: { transaction_type } }).then(r => r.data)
+
 
 export default api

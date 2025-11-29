@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import {getMonthTransactions} from "./../api"
+import {getMonthTransactions, editPlan} from "./../api"
+
 
 export default function MonthView({transactions}) {
   const [month, setMonth] = useState(dayjs().startOf("month"));
@@ -8,6 +9,22 @@ export default function MonthView({transactions}) {
     expenses: [],
     incomes: [],
   });
+  const [planEdited, setPlanEdited] = useState(false)
+
+  async function handleDoubleClick(element) {
+    let result = prompt(`Set planned amount for ${element.category} (${month.format("MMMM YYYY")})`);
+
+    if (element.planned && element.planned === result) return;
+
+    await editPlan({
+      category: element.category,
+      type: element.type,
+      month: month.format("YYYY-MM-DD"),
+      amount: parseFloat(result)
+    })
+    setPlanEdited(true)
+
+  }
 
   useEffect(() => {
     const loadMonth = async () => {
@@ -15,10 +32,11 @@ export default function MonthView({transactions}) {
       const data = await getMonthTransactions(monthStr)
 
       setData(data);
+      setPlanEdited(false)
     };
 
     loadMonth();
-  }, [month, transactions]);
+  }, [month, transactions, planEdited]);
 
 
   const prevMonth = () => {
@@ -69,7 +87,7 @@ export default function MonthView({transactions}) {
               <tr key={idx} className="">
                 <td className="border p-2">{item.category}</td>
                 <td className="border p-2">{item.actual?.toFixed(2)}</td>
-                <td className="border p-2">{item.planned?.toFixed(2)}</td>
+                <td className="border p-2" onDoubleClick={() => handleDoubleClick(item)  }> {item.planned?.toFixed(2)} </td>
               </tr>
             ))}
 
@@ -100,7 +118,7 @@ export default function MonthView({transactions}) {
               <tr key={idx} className="">
                 <td className="border p-2">{item.category}</td>
                 <td className="border p-2">{item.actual?.toFixed(2)}</td>
-                <td className="border p-2">{item.planned?.toFixed(2)}</td>
+                <td className="border p-2" onDoubleClick={() => handleDoubleClick(item)  }> {item.planned?.toFixed(2)} </td>
               </tr>
             ))}
 
