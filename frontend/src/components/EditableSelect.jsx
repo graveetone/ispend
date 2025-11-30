@@ -49,7 +49,7 @@ export default function EditableSelect({
   return (
     <div className="relative" ref={containerRef}>
       <div
-        className="border rounded-lg px-3 py-2 cursor-pointer bg-white"
+        className="border rounded-3xl px-3 py-2 cursor-pointer bg-white"
         onClick={() => setOpen((s) => !s)}
       >
         {value || placeholder}

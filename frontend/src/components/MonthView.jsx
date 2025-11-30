@@ -10,6 +10,7 @@ export default function MonthView({transactions}) {
     incomes: [],
   });
   const [planEdited, setPlanEdited] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   async function handleDoubleClick(element) {
     let result = prompt(`Set planned amount for ${element.category} (${month.format("MMMM YYYY")})`);
@@ -27,6 +28,7 @@ export default function MonthView({transactions}) {
   }
 
   useEffect(() => {
+    setLoading(true)
     const loadMonth = async () => {
       const monthStr = month.format("YYYY-MM-DD");
       const data = await getMonthTransactions(monthStr)
@@ -36,6 +38,7 @@ export default function MonthView({transactions}) {
     };
 
     loadMonth();
+    setTimeout(() => {setLoading(false)}, 0)
   }, [month, transactions, planEdited]);
 
 
@@ -47,91 +50,81 @@ export default function MonthView({transactions}) {
     setMonth(month.add(1, "month"));
   };
 
-  return (
-    <div className="p-6 w-full flex flex-col items-around">
-
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+  function MonthViewHeader() {
+    return (
+      <div className="flex items-center justify-around">
         <button
           onClick={prevMonth}
-          className="px-3 py-2 bg-black text-white hover:text-white rounded-lg hover:bg-red-500 border border-2 border-red-500"
+          className="w-full p-1 bg-black text-lg text-white hover:text-white rounded-lg hover:bg-red-500 border border-2 border-red-500"
         >
-          ← Prev
+          ◀ Previous
         </button>
 
-        <h1 className="text-2xl font-semibold">
-          {month.format("MMMM YYYY")}
-        </h1>
+        <div className="w-full flex flex-col justify-center items-center" onDoubleClick={() => setMonth(dayjs().startOf("month"))}>
+          <h3 className="text-md font-semibold">
+            {month.format("MMMM")}
+          </h3>
+          <h3 className="text-md font-semibold">
+            {month.format("YYYY")}
+          </h3>
+        </div>
 
         <button
           onClick={nextMonth}
-          className="px-3 py-2 bg-black text-white hover:text-white rounded-lg hover:bg-red-500 border border-2 border-red-500"
+          className="w-full p-1 bg-black text-lg text-white hover:text-white rounded-lg hover:bg-red-500 border border-2 border-red-500"
         >
-          Next →
+          Next ▶
         </button>
       </div>
-
-      {/* Expenses */}
-      <div className="mb-10">
-        <h2 className="text-xl font-semibold mb-3">Expenses</h2>
-        <table className="w-full text-left">
-          <thead className="bg-red-500">
+    )
+  }
+  function MonthViewTable({title, data}) {
+    return (
+      <div className="flex flex-col justify-center items-center gap-3">
+      <h2 className="text-xl font-medium">{title}</h2>
+      <table className="w-full text-left">
+        <thead className="bg-red-500">
+          <tr className="text-center">
+            <th className="p-1 font-normal">Category</th>
+            <th className="p-1 font-normal">Amount</th>
+            <th className="p-1 font-normal">Planned</th>
+            <th className="p-1 font-normal">Diff</th>
+          </tr>
+        </thead>
+        <tbody className="">
+          {loading ? (
             <tr>
-              <th className="border p-4">Category</th>
-              <th className="border p-4">Amount</th>
-              <th className="border p-4">Planned</th>
-            </tr>
-          </thead>
-          <tbody className="">
-            {data.expenses.map((item, idx) => (
-              <tr key={idx} className="">
-                <td className="border p-2">{item.category}</td>
-                <td className="border p-2">{item.actual?.toFixed(2)}</td>
-                <td className="border p-2" onDoubleClick={() => handleDoubleClick(item)  }> {item.planned?.toFixed(2)} </td>
-              </tr>
-            ))}
-
-            {data.expenses.length === 0 && (
+            <td className="p-3" colSpan={4}>
+              <div className="flex justify-center">
+                  <img className ="w-[30%]" src="https://media3.giphy.com/media/v1.Y2lkPTZjMDliOTUyOXM4bTk5cm00ZmI3dzMyaWxoOTNjYWx2YnN2M2R6ejh6Y2xjamU5MCZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/mPaNqi4mmXJKCYX18R/source.gif"/>
+              </div>
+            </td>
+          </tr> ) : (
+            data.length === 0 ? (
               <tr>
-                <td className="p-3 text-center text-slate-500" colSpan={3}>
+                <td className="p-3 text-center text-slate-500" colSpan={4}>
                   No data
                 </td>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Incomes */}
-      <div>
-        <h2 className="text-xl font-semibold mb-3">Incomes</h2>
-        <table className="w-full text-left">
-          <thead className="bg-red-500">
-            <tr>
-              <th className="border p-2">Category</th>
-              <th className="border p-2">Amount</th>
-              <th className="border p-2">Planned</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.incomes.map((item, idx) => (
-              <tr key={idx} className="">
-                <td className="border p-2">{item.category}</td>
-                <td className="border p-2">{item.actual?.toFixed(2)}</td>
-                <td className="border p-2" onDoubleClick={() => handleDoubleClick(item)  }> {item.planned?.toFixed(2)} </td>
+            ) : (
+            data.map((item, idx) => (
+              <tr key={idx} className="text-center">
+                <td className="p-1 font-normal border">{item.category}</td>
+                <td className="p-1 font-normal border">{item.actual?.toFixed(2)}</td>
+                <td className="p-1 font-normal border" onDoubleClick={() => handleDoubleClick(item)  }> {item.planned?.toFixed(2)} </td>
+                <td className={`p-1 font-normal border ${item.planned?.toFixed(2) - item.actual?.toFixed(2) > 0 ? 'text-green-400' : 'text-red-400'}`}> {(item.planned?.toFixed(2) - item.actual?.toFixed(2)) || ''} </td>
               </tr>
-            ))}
-
-            {data.incomes.length === 0 && (
-              <tr>
-                <td className="p-3 text-center text-slate-500" colSpan={3}>
-                  No data
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            ))))}
+        </tbody>
+      </table>
     </div>
-  );
+    )
+  }
+  return (
+    <div className="w-full flex flex-col items-around border-yellow-400 gap-5">
+      <MonthViewHeader />
+      <MonthViewTable title="Expenses" data={data.expenses} />
+      <MonthViewTable title="Incomes" data={data.incomes} />
+      </div>
+  )
 }
