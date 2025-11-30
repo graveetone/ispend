@@ -19,10 +19,14 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['http://localhost:5173', "https://i-spend.vercel.app"],  # list of allowed origins
+    allow_origins=[
+        "http://localhost:5173",
+        "https://i-spend.vercel.app",
+        "http://192.168.0.102:5173"
+    ],
     allow_credentials=True,
-    allow_methods=["*"],    # allow all HTTP methods: GET, POST, PUT, DELETE...
-    allow_headers=["*"],    # allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 routers = [
