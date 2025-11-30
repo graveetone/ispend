@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "react-day-picker/style.css";
 import { fetchTransactions } from "./../api"
 import { Link } from "react-router-dom";
+import Menu from "./Menu";
 
 export default function MonthCalendar() {
   const [selected, setSelected] = useState(new Date());
@@ -21,7 +22,9 @@ export default function MonthCalendar() {
     }, [selected])
 
   return (
+    <div className="w-full p-8 border-blue-500 h-[80vh]">
     <div className="flex flex-col items-center">
+    <Menu />
     <div className="flex justify-around w-full p-6 items-center  border-red-500">
         <div className="flex justify-center items-center  border-red-500 w-full" >
             <DayPicker mode="single" month={selected} selected={selected} onSelect={setSelected}/>
@@ -49,8 +52,6 @@ export default function MonthCalendar() {
             ) : `No transactions for ${selected.toLocaleDateString()}`}
         </div>
     </div>
-    <div className="flex">
-        <Link className="px-4 py-2 bg-black text-white rounded-lg hover:bg-red-500 border border-2 border-red-500" to="/">📌 Dashboard</Link>
     </div>
     </div>
   );

@@ -8,7 +8,7 @@ export default function App() {
     <>
     <Routes>
       <Route path="/" element={<Dashboard />} />
-      <Route path="/calendar" element={<MonthCalendar />} />
+      <Route path="/transactions" element={<MonthCalendar />} />
     </Routes>
 
   </>

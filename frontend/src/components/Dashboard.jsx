@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import TransactionForm from './TransactionForm'
+import Menu from './Menu';
 
-import { Link } from 'react-router-dom';
 import MonthView from './MonthView'
 import {
   fetchTransactions,
@@ -32,7 +32,7 @@ export default function Dashboard() {
 
 return (
     <div className="w-full p-8 border-blue-500 h-[80vh]">
-      <h1 className="text-3xl font-bold mb-4">💰 iSpend 💰</h1>
+      <Menu />
 
       <div className="flex justify-around border-white h-full">
         <div className="w-[50%] border-yellow-500">
@@ -42,9 +42,9 @@ return (
           <TransactionForm onCreate={handleCreate} />
         </div>
       </div>
-      <div className="flex justify-end">
+      {/* <div className="flex justify-end">
           <Link className="px-4 py-2 bg-black text-white rounded-lg hover:bg-red-500 border border-2 border-red-500" to="/calendar">📆 Calendar</Link>
-      </div>
+      </div> */}
     </div>
   )
 }
