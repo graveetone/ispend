@@ -1,9 +1,18 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
+from dotenv import load_dotenv
 
-PGHOST = os.getenv("PGHOST") or "localhost:5432"
-DATABASE_URL = f"postgresql+asyncpg://postgres:mysecretpassword@{PGHOST}/ispend_db"  # noqa: E501
+load_dotenv()
+
+DATABASE_URL = "postgresql+asyncpg://{username}:{password}@{host}:{port}/{database}".format(
+    host=os.getenv("DB_HOST"),
+    port=os.getenv("DB_PORT", 5432),
+    username=os.getenv("DB_USERNAME"),
+    password=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_NAME"),
+)
+
 Base = declarative_base()
 
 engine = create_async_engine(DATABASE_URL, echo=True)
