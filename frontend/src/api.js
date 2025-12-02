@@ -28,6 +28,7 @@ export const getMonthSummary = (month) => api.get(`/api/v1/months/${month}`).the
 
 export const getMonthTransactions = (month) => api.get(`/api/v1/months/${month}`).then(r => r.data)
 export const getCategories = (transaction_type) => api.get(`/api/v1/categories`, { params: { transaction_type } }).then(r => r.data)
+export const getAppVersion = () => api.get(`/version`).then(r => r.data)
 
 
 export default api

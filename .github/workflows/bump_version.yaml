@@ -1,0 +1,38 @@
+name: 🤖 Bump app version
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  generate-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # needed for git commit count
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Generate version.py
+        run: |
+          echo "VERSION='v0.$(git rev-list --count HEAD)'" > version.py
+          echo "COMMIT='$(git rev-parse --short HEAD)'" >> version.py
+
+      - name: Commit version.py if changed
+        run: |
+          if ! git diff --quiet version.py; then
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+            git add version.py
+            git commit -m "Update version.py [skip ci]"
+            git push
+          else
+            echo "version.py has not changed."
+          fi
