@@ -22,7 +22,6 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "https://i-spend.vercel.app",
-        "http://192.168.0.102:5173"
     ],
     allow_credentials=True,
     allow_methods=["*"],
