@@ -56,6 +56,26 @@ export default function MonthView() {
     setMonth(month.add(1, "month"));
   };
 
+  async function handleCreateNewPlan(type) {
+    let result = prompt(`Specify new ${type} category to create plan for ${month.format("MMMM YYYY")}`);
+    if (!result) return;
+
+    let transactions = type == "expense" ? data.expenses : data.incomes
+    let categoryExists = transactions.some(item => item.category == result);
+    if (categoryExists) {
+      alert(`Category ${result} already exists!`)
+      return;
+    }
+
+    await editPlan({
+      category: result,
+      type: type,
+      month: month.format("YYYY-MM-DD"),
+      amount: 0.0
+    })
+    setPlanEdited(true)
+  }
+
   function MonthViewHeader() {
     return (
       <div className="flex items-center justify-around">
@@ -84,7 +104,7 @@ export default function MonthView() {
       </div>
     )
   }
-  function MonthViewTable({title, data, total}) {
+  function MonthViewTable({title, data, total, type}) {
     return (
       <div className="flex flex-col justify-center items-center gap-3">
       <h2 className="text-xl font-medium">{title}</h2>
@@ -93,7 +113,7 @@ export default function MonthView() {
           <tr className="text-center">
             <th className="p-1 font-normal">Category</th>
             <th className="p-1 font-normal">Amount</th>
-            <th className="p-1 font-normal">Planned</th>
+            <th className="p-1 font-normal" onDoubleClick={() => handleCreateNewPlan(type)}>Planned</th>
             <th className="p-1 font-normal">Diff</th>
           </tr>
         </thead>
@@ -138,8 +158,8 @@ export default function MonthView() {
   return (
     <div className="w-full flex flex-col items-around border-yellow-400 gap-5">
       <MonthViewHeader />
-      <MonthViewTable title="Expenses" data={data.expenses} total={data.total.expenses}/>
-      <MonthViewTable title="Incomes" data={data.incomes} total={data.total.incomes}/>
+      <MonthViewTable title="Expenses" data={data.expenses} total={data.total.expenses} type="expense"/>
+      <MonthViewTable title="Incomes" data={data.incomes} total={data.total.incomes} type="income"/>
       </div>
   )
 }
