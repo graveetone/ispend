@@ -12,7 +12,7 @@ export default function Transactions() {
     incomes: 0,
   })
   const [transactionsChanged, setTransactionsChanged] = useState(false)
-  
+
   useEffect(() => {
       setLoading(true)
       const loadDayTransactions = async () => {
@@ -28,9 +28,29 @@ export default function Transactions() {
 
     loadDayTransactions()
     setTimeout(() => {setLoading(false)}, 0)
-    setTransactionsChanged(false)  // this shit triggers useEffect again
-    
-    }, [selected, transactionsChanged])
+
+    }, [selected])
+
+    useEffect(() => {
+        if (!transactionsChanged) return
+
+        setLoading(true)
+        const loadDayTransactions = async () => {
+            const monthStr = selected.toLocaleDateString('en-CA');
+            const data = await fetchTransactions({date: monthStr})
+      
+            setTransactions(data);
+            setTotal({
+              expenses: data.filter(item => item.type === "expense").reduce((accumulator, currentItem) => accumulator + currentItem.amount, 0),
+              incomes: data.filter(item => item.type === "income").reduce((accumulator, currentItem) => accumulator + currentItem.amount, 0)
+            })
+        };
+  
+      loadDayTransactions()
+      setTimeout(() => {setLoading(false)}, 0)
+      setTransactionsChanged(false)
+
+      }, [transactionsChanged])
 
     async function handleDoubleClick(transaction) {
         let message = {

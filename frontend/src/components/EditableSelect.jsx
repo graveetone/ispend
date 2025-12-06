@@ -33,7 +33,6 @@ export default function EditableSelect({
   }, []);
 
   const handleSelect = (c) => {
-    console.log('handle select')
     onChange(c);
     setSearch("");
     setOpen(false);
