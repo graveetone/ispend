@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import {getMonthTransactions, editPlan} from "./../api"
 
 
-export default function MonthView({transactions}) {
+export default function MonthView() {
   const [month, setMonth] = useState(dayjs().startOf("month"));
   const [data, setData] = useState({
     expenses: [],
@@ -25,22 +25,27 @@ export default function MonthView({transactions}) {
       amount: parseFloat(result)
     })
     setPlanEdited(true)
-
   }
 
-  useEffect(() => {
+  const loadMonth = async () => {
     setLoading(true)
-    const loadMonth = async () => {
-      const monthStr = month.format("YYYY-MM-DD");
-      const data = await getMonthTransactions(monthStr)
+    const monthStr = month.format("YYYY-MM-DD");
+    const data = await getMonthTransactions(monthStr)
 
-      setData(data);
-      setPlanEdited(false) // this shit triggers useEffect again
-    };
-
-    loadMonth();
+    setData(data)
     setTimeout(() => {setLoading(false)}, 0)
-  }, [month, transactions, planEdited]);
+  };
+
+  useEffect(() => {
+    loadMonth();
+  }, [month]);
+
+  useEffect(() => {
+    if (!planEdited) return
+
+    loadMonth()
+    setPlanEdited(false)
+  }, [planEdited]);
 
 
   const prevMonth = () => {
@@ -119,7 +124,7 @@ export default function MonthView({transactions}) {
                 <tr key={idx} className="text-center">
                   <td className="p-1 font-normal border">{item.category}</td>
                   <td className="p-1 font-normal border">{item.actual?.toFixed(2)}</td>
-                  <td className="p-1 font-normal border" onDoubleClick={() => handleDoubleClick(item)  }> {item.planned?.toFixed(2)} </td>
+                  <td className="p-1 font-normal border" onDoubleClick={() => handleDoubleClick(item)}> {item.planned?.toFixed(2)} </td>
                   <td className={`p-1 font-normal border ${item.planned?.toFixed(2) - item.actual?.toFixed(2) > 0 ? 'text-green-500' : 'text-red-500'}`}> {Number.isNaN(item.planned?.toFixed(2) - item.actual?.toFixed(2)) ? "" : (item.planned?.toFixed(2) - item.actual?.toFixed(2)).toFixed(2)} </td>
                 </tr>
               ))}
