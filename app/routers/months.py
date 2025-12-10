@@ -60,8 +60,8 @@ async def get_month_new(
             full=True
         )
     ).order_by(
-        tq.c.actual.desc(),
-        pq.c.planned.desc(),
+        tq.c.actual.desc().nullslast(),
+        pq.c.planned.desc().nullslast(),
     )
 
     result = await session.execute(query)
