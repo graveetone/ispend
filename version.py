@@ -1,2 +1,2 @@
-VERSION='v0.52'
-COMMIT='8faeaf6'
+VERSION='v0.54'
+COMMIT='8f5041c'
