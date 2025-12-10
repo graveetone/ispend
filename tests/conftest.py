@@ -59,6 +59,13 @@ def transactions():
             "created_at": "2025-08-05"
         },
         {
+            "type": "income",
+            "amount": 500,
+            "description": "present from Sviatyi Mykolai",
+            "category": "Present",
+            "created_at": "2025-08-04"
+        },
+        {
             "type": "expense",
             "amount": 59.99,
             "description": "Chips",
@@ -77,6 +84,13 @@ def transactions():
             "amount": 120,
             "description": "Burger",
             "category": "Food",
+            "created_at": "2025-08-05"
+        },
+        {
+            "type": "expense",
+            "amount": 400,
+            "description": "thrown for the wind",
+            "category": "Hobby",
             "created_at": "2025-08-05"
         },
     ]

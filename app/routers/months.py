@@ -32,8 +32,6 @@ async def get_month_new(
     ).group_by(
         Transaction.category,
         Transaction.type
-    ).order_by(
-        func.sum(Transaction.amount).desc(),
     ).subquery()
 
     pq = select(
@@ -46,8 +44,6 @@ async def get_month_new(
         Plan.type,
         Plan.category,
         Plan.amount,
-    ).order_by(
-        Plan.amount.desc()
     ).subquery()
 
     query = select(
@@ -63,6 +59,9 @@ async def get_month_new(
             isouter=True,
             full=True
         )
+    ).order_by(
+        tq.c.actual.desc(),
+        pq.c.planned.desc(),
     )
 
     result = await session.execute(query)

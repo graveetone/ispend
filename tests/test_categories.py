@@ -3,8 +3,8 @@ import pytest
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("transaction_type, expected_response", [
-    ("expense", ["Food"]),
-    ("income", ["Salary"]),
+    ("expense", ["Food", "Hobby"]),
+    ("income", ["Salary", "Present"]),
 ], ids=[
     'expenses categories',
     'incomes categories',

@@ -15,14 +15,16 @@ plan_no_transactions_response = dict(
 plan_and_transactions = dict(
     month="2025-08-01",
     incomes=[
-        dict(category="Salary", actual=100.5, planned=None, type="income")
+        dict(category="Present", actual=500.0, planned=None, type="income"),
+        dict(category="Salary", actual=100.5, planned=None, type="income"),
     ],
     expenses=[
+        dict(category="Hobby", type="expense", planned=None, actual=400.0),
         dict(category="Food", type="expense", planned=200.0, actual=179.99),
     ],
     total=dict(
-        incomes=dict(actual=100.5, planned=0.0),
-        expenses=dict(actual=179.99, planned=200.0),
+        incomes=dict(actual=600.5, planned=0.0),
+        expenses=dict(actual=579.99, planned=200.0),
     )
 )
 

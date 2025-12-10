@@ -16,7 +16,7 @@ async def test_create_transaction(client_factory):
     data = response.json()
     assert data["description"] == "Test income"
     assert data["amount"] == 100.5
-    assert data["id"] == 5
+    assert data["id"] == 7
 
 
 @pytest.mark.parametrize(
@@ -24,8 +24,8 @@ async def test_create_transaction(client_factory):
     argvalues=[
         (dict(transaction_type="income", date="2025-08-05"), 1),
         (dict(transaction_type="expense", date="2025-08-12"), 1),
-        (dict(transaction_type="expense"), 3),
-        (dict(date="2025-08-05"), 2),
+        (dict(transaction_type="expense"), 4),
+        (dict(date="2025-08-05"), 3),
         (dict(transaction_type="income", date="2025-08-11"), 0),
     ],
     ids=[
