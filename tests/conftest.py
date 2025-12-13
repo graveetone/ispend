@@ -5,8 +5,10 @@ from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
+from app.dependencies import get_current_user
 from app.main import app
 from app.db import get_session, Base
+from app.routers import oauth
 
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
@@ -18,11 +20,30 @@ TestingSessionLocal = sessionmaker(
 )
 
 
+@pytest.fixture()
+def test_env(monkeypatch):
+    monkeypatch.setattr(oauth, "APP_JWT_SECRET", "test-secret")
+    monkeypatch.setattr(oauth, "GOOGLE_CLIENT_ID", "test")
+    monkeypatch.setattr(oauth, "GOOGLE_CLIENT_SECRET", "test")
+
+    return {
+        "APP_JWT_SECRET": "test-secret",
+        "GOOGLE_CLIENT_ID": "test",
+        "GOOGLE_CLIENT_SECRET": "test",
+    }
+
+
 async def override_get_session() -> AsyncSession:
     async with TestingSessionLocal() as session:
         yield session
 
+
+def fake_user():
+    return "test@test.com"
+
+
 app.dependency_overrides[get_session] = override_get_session
+app.dependency_overrides[get_current_user] = fake_user
 
 
 @pytest.fixture(autouse=True)

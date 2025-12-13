@@ -39,18 +39,12 @@ def create_app_jwt(email: str):
 async def login(request: Request):
     redirect_uri = f"{os.getenv('BACKEND_URL')}/api/v1/oauth/callback"
     resp = await oauth.google.authorize_redirect(request, redirect_uri)
-    print("STATE SENT:", request.session.get("oauth_google_state"))
+
     return resp
 
 
 @router.get("/callback")
 async def auth_callback(request: Request):
-
-    returned_state = request.query_params.get("state")
-    stored_state = request.session.get("oauth_google_state")
-
-    print("STATE RETURNED:", returned_state)
-    print("STATE STORED:", stored_state)
     token = await oauth.google.authorize_access_token(request)
     userinfo = token.get("userinfo")
     if not userinfo:
