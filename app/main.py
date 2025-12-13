@@ -37,7 +37,7 @@ app.add_middleware(
 )
 app.add_middleware(
     SessionMiddleware,
-    secret_key=os.environ["SESSION_SECRET_KEY"],
+    secret_key=os.getenv("SESSION_SECRET_KEY"),
     session_cookie="my_session",
 )
 
