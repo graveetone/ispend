@@ -2,11 +2,13 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy import select, union_all
 
+from app.dependencies import get_current_user
+
 from ..schemas import TransactionType
 from ..models import Plan, Transaction
 from ..db import get_session
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(get_current_user)])
 
 
 @router.get("", status_code=status.HTTP_200_OK)

@@ -7,6 +7,12 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
+api.interceptors.request.use(cfg => {
+  const t = localStorage.getItem("ispend_token");
+  if (t) cfg.headers.Authorization = `Bearer ${t}`;
+  return cfg;
+});
+
 // Transactions
 export const fetchTransactions = ({ transaction_type, date } = {}) => {
   const params = {}
@@ -29,6 +35,13 @@ export const getMonthSummary = (month) => api.get(`/api/v1/months/${month}`).the
 export const getMonthTransactions = (month) => api.get(`/api/v1/months/${month}`).then(r => r.data)
 export const getCategories = (transaction_type) => api.get(`/api/v1/categories`, { params: { transaction_type } }).then(r => r.data)
 export const getAppVersion = () => api.get(`/version`).then(r => r.data)
-
+export const getMe = () => api.get(`/api/v1/oauth/me`).then(r => r.data).catch(e => {
+  if (e.response?.status === 401) return null
+  if (e.response?.status === 403) {
+    alert("Forbidden")
+    return null
+  }
+  Promise.reject(e)
+})
 
 export default api

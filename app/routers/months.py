@@ -5,12 +5,14 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.sql.functions import coalesce
 
+from app.dependencies import get_current_user
+
 from ..models import Transaction
 from ..schemas import TransactionType
 from ..models import Plan
 from ..db import get_session
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(get_current_user)])
 
 
 # # TODO: add pydantic model for response

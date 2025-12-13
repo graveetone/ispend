@@ -5,11 +5,13 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import select
 
+from app.dependencies import get_current_user
+
 from ..schemas import PlanCreate, PlanModel
 from ..models import Plan
 from ..db import get_session
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(get_current_user)])
 
 
 @router.post("/", response_model=PlanModel)

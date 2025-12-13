@@ -4,6 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy import select
 
+from app.dependencies import get_current_user
+
 from ..schemas import (
     TransactionCreate, TransactionUpdate,
     TransactionType, TransactionModel,
@@ -11,7 +13,7 @@ from ..schemas import (
 from ..models import Transaction
 from ..db import get_session
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(get_current_user)])
 
 
 @router.post("/", response_model=TransactionModel)
