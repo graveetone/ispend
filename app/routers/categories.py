@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio.session import AsyncSession
-from sqlalchemy import select, union_all
+from sqlalchemy import func, select, union_all
 
 from app.dependencies import get_current_user
 
@@ -17,11 +17,26 @@ async def get_categories(
         session: AsyncSession = Depends(get_session)
 ):
     combined = union_all(
-        select(Transaction.category).where(Transaction.type == transaction_type),
-        select(Plan.category).where(Plan.type == transaction_type),
+        select(
+            Transaction.category.label("category")
+        ).where(
+            Transaction.type == transaction_type
+        ),
+        select(
+            Plan.category.label("category")
+        ).where(
+            Plan.type == transaction_type
+        ),
+    ).subquery()
+
+    query = (
+        select(
+            combined.c.category,
+            func.count().label("usage_count")
+        )
+        .group_by(combined.c.category)
+        .order_by(func.count().desc())
     )
 
-    query = select(combined.c.category).distinct()
-
-    categories = await session.execute(query)
-    return categories.scalars().all()
+    result = await session.execute(query)
+    return [row.category for row in result.all()]

@@ -10,9 +10,14 @@ export default function TransactionForm() {
   const [createdAt, setCreatedAt] = useState(new Date().toLocaleDateString('en-CA'))
   const [categories, setCategories] = useState([])
 
+  async function getCategoriesAsync() {
+    setCategories(await getCategories(type))
+  }
+
   const submit = async (e) => {
     e.preventDefault()
     if (!amount || !description || !category || !createdAt) return
+    const newCategory = !categories.includes(category)
     await createTransaction({ type, amount: parseFloat(amount), description, category, created_at: createdAt })
     setAmount('')
     setDescription('')
@@ -24,14 +29,15 @@ export default function TransactionForm() {
     else {
       alert(`Added ${type}: ${amount} from ${category}`)
     }
+    if (newCategory) {
+      // refetch categories if new category created
+      getCategoriesAsync()
+    }
   }
 
   const expenseTransaction = (type === 'expense');
   
   useEffect(() => {
-    async function getCategoriesAsync() {
-      setCategories(["Other", ...await getCategories(type)])
-    }
     getCategoriesAsync()
   }, [type])
 
